@@ -216,6 +216,10 @@ contract Voter is IVoter {
             _weights[i] = votes[_tokenId][_poolVote[i]];
         }
 
+        // @audit-issue during the vote, the previous-boost is not considered in `tokenBoost[_tokenId];` thus making the user to loose voting-power
+        // @note the idea is to check the user-abuse/loss flow and how the user can be affected by this
+        // @audit fix: consider the previous-boost in the poke function as well
+        // @audit-info CHECK_TAG: user-abuse/loss flow
         _vote(_tokenId, _poolVote, _weights, _boost);
     }
 
