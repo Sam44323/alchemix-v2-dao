@@ -61,6 +61,10 @@ abstract contract L2GovernorVotesQuorumFraction is L2GovernorVotes {
      * - New numerator must be smaller or equal to the denominator.
      */
     function updateQuorumNumerator(uint256 newQuorumNumerator) external virtual onlyGovernance {
+        // @audit-issue there is no min-numerator check which makes it vulnerable for a scenario where if a value is set which is too-low then all previous invalid quorums would be valid
+        // @note could be verified with initial-check
+        // @audit fix: add a min-numerator check
+        // @audit-info CHECK_TAG: low-hanging issue detection
         _updateQuorumNumerator(newQuorumNumerator);
     }
 
