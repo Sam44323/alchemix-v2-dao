@@ -632,6 +632,14 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
         emit ClaimFeeUpdated(_claimFeeBps);
     }
 
+    // @audit-issue during the merging of the tokenA to tokenB, when the user has accrued rewards in tokenA and merged to tokenB, the merge doesn't check and verify the already accrued reward for tokenB thus making it inflate the rewards post merging. Example
+
+    // tokenA -> locked 100 -> rewarded 10-tokens (calling reset-function) | tokenB -> locked 100 -> no-rewards claimed as of yet
+    // tokenA merged to tokenB -> tokenB has 200 tokens -> calling reset-function -> rewarded 20-tokens
+    // so in-total it is 30-tokens rewarded for only 200 locked tokens
+    // @note the idea of the attack vector could be deciphered by just analyzing the cross-function flow and how to manipulate the rewards for the advantage of the attacker
+    // @audit fix: during the merging check and update the already accrued rewards for the target token as well before the merges
+    // @audit-info CHECK_TAG: protocol-assault flow AND fund drain/advantage flow
     /// @inheritdoc IVotingEscrow
     function merge(uint256 _from, uint256 _to) external {
         require(!voted[_from], "voting in progress for token");
