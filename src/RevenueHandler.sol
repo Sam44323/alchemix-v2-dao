@@ -74,6 +74,10 @@ contract RevenueHandler is IRevenueHandler, Ownable {
         veALCX = _veALCX;
         require(_treasury != address(0), "treasury cannot be 0x0");
         treasury = _treasury;
+        // @audit-issue wrong variable checking for the limit-version, it should be _treasuryPct instead of treasuryPct
+        // @note this attack-vector is easy to check, just verify the validation of the input
+        // @audit fix: replace the variable with the correct-one
+        // @audit-info CHECK_TAG: low-hanging issue detection flow
         require(treasuryPct <= BPS, "treasury pct too large");
         treasuryPct = _treasuryPct;
     }
