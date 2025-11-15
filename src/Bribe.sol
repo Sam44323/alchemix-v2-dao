@@ -109,6 +109,9 @@ contract Bribe is IBribe {
     }
 
     /// @inheritdoc IBribe
+    // @audit-issue A malicious user can front-run the admin's swapReward() call by directly invoking notifyRewardAmount() with the new whitelisted token. This adds the token to the end of the rewards array instead of replacing the intended index. When the admin's swap transaction executes, it fails because the token already exists in the array, causing gas loss and griefing. The attacker can repeat this attack with minimal cost.
+    // @note check the order/frontrun
+    // @audit fix: make this only callable by the admin
     function notifyRewardAmount(address token, uint256 amount) external lock {
         require(amount > 0, "reward amount must be greater than 0");
 
