@@ -20,6 +20,7 @@ import "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 // @audit-issue not ERC-721 compliant as it has a broken EIP-165 implementation which is mandated in ERC-721 specifications. For it to wrk everyone should return:true value which this contract overall doesn't
 // @note checking the compliancy of the EIP/ERC that is being used during the review of the audit
 // @audit fix: do a proper implementation of EIP-165
+// @audit-info CHECK_TAG: low-hanging issue detection flow
 contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
     using SafeERC20 for IERC20;
 
@@ -353,6 +354,7 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
         // @audit-issue division before multiplication, leading to precision-loss
         // @note the idea that could be used as this was a value-out then the potentials could be whether the amount is relatively-low and thus check it during the audit
         // @audit fix: uint256 ragequitAmount = (oneEpochFlux * fluxMultiplier * MAXTIME) / EPOCH;
+        // @audit-info CHECK_TAG: low-hanging issue detection flow OR drain-flow
 
         // total amount of epochs in fluxMultiplier amount of years
         uint256 totalEpochs = fluxMultiplier * ((MAXTIME) / EPOCH);
@@ -1002,6 +1004,7 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
     // @audit-issue gas-limit issue, where with MAX_DELEGATES as 1024, it would need 25M for this function to operate and due to some EVM chains having a block gas-limit of 15M this is more prone to DoS attack
     // @note by using the likes of --gas-report, cross-chain analysis and also because this is a loop-value function, analysis gas-limit issues are must to check
     // @audit fix: consider lowering-over MAX_DELEGATES to 128 for mitigation of this risk overall
+    // @audit-info CHECK_TAG: low-hanging issue detection flow
     function _moveTokenDelegates(address src, address dst, uint256 _tokenId) internal {
         if (src != dst && _tokenId > 0) {
             // If the source is not the zero address, we decrement the number of tokenIds
@@ -1577,6 +1580,7 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
         // @audit-issue _burn function requires broader permissions than those granted to single-token approvals. This causes reverts for approved operators who should have burn privileges and the action of merge and withdraw wont be executed cause only ownr or approved can do those actions which is not strictly required according to the protocol
         @note the idea was to check how the custom approval was creating and issue and how it woulld've handled
         // @audit fix: refactor the `approve` function for this
+        // @audit-info CHECK_TAG: user-abuse flow
         
         // Clear approval
         approve(address(0), _tokenId);

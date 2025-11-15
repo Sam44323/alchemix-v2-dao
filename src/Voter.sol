@@ -194,6 +194,7 @@ contract Voter is IVoter {
     // @audit-issue poke function doesn't have the onlyNewEpoch modifier, allowing accrual of the repeated-FLUX tokens in the same-block thus making it abusive
     // @note the idea how to check this from an attacker perspective is what are the advantage flow and how can I game this situation to make it drain
     // @audit fix: added onlyNewEpoch modifier to the poke function to prevent multiple calls within the same epoch
+    // @audit-info CHECK_TAG: fund drain/advantage flow
     /// @inheritdoc IVoter
     function poke(uint256 _tokenId) public {
         // Previous boost will be taken into account with weights being pulled from the votes mapping

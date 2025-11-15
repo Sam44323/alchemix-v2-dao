@@ -245,6 +245,7 @@ contract RevenueHandler is IRevenueHandler, Ownable {
                 // @audit-issue any unclaimed revenue that is in the contract is double-counted during next epoch call-update thus making the protocol insolvent as users can attempt to claim more amt than what is actually in the contract.
                 // @note the idea of this attack was again-over to check how to drain or get more amt thus gaming the system and this is one of the flaw overall which leverages the early claimers to have more amt to claim and thus leaving the latter claimers with less or no amt to claim.
                 // @audit fix: Before calculating thisBalance, we should melt/sync any existing revenue tokens to their alAsset equivalent to ensure accurate accounting.
+                // @audit-info CHECK_TAG: fund drain/advantage flow
                 uint256 thisBalance = IERC20(token).balanceOf(address(this));
 
                 // If poolAdapter is set, the revenue token is an alchemic-token
