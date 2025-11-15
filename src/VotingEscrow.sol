@@ -1574,6 +1574,10 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
         uint256 supplyAfter = supplyBefore - _value;
         supply = supplyAfter;
 
+        // @audit-issue _burn function requires broader permissions than those granted to single-token approvals. This causes reverts for approved operators who should have burn privileges and the action of merge and withdraw wont be executed cause only ownr or approved can do those actions which is not strictly required according to the protocol
+        @note the idea was to check how the custom approval was creating and issue and how it woulld've handled
+        // @audit fix: refactor the `approve` function for this
+        
         // Clear approval
         approve(address(0), _tokenId);
         // Checkpoint for gov
