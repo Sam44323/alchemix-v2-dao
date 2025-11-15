@@ -999,8 +999,8 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
         }
     }
 
-    // @audit-issue gas-limit issue, where with MAX_DELEGATES as 1024, it would need 25M for this function to operate and due to some EVM chains having a block gas-limit of 15M this is more prone to DoS attacl
-    // @note by using the likes of --gas-report, cross-chain ananlysis and also because this is a loop-value function, analysis gas-limit issues are must to check
+    // @audit-issue gas-limit issue, where with MAX_DELEGATES as 1024, it would need 25M for this function to operate and due to some EVM chains having a block gas-limit of 15M this is more prone to DoS attack
+    // @note by using the likes of --gas-report, cross-chain analysis and also because this is a loop-value function, analysis gas-limit issues are must to check
     // @audit fix: consider lowering-over MAX_DELEGATES to 128 for mitigation of this risk overall
     function _moveTokenDelegates(address src, address dst, uint256 _tokenId) internal {
         if (src != dst && _tokenId > 0) {
