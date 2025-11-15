@@ -13,6 +13,11 @@ import "openzeppelin-contracts/contracts/governance/utils/IVotes.sol";
  * @notice Alchemix specific governance parameters
  * @dev Extends the Open Zeppelin governance system
  */
+
+ // @audit-issue using L2GovernorVotesQuorumFraction which is a modified version of GovernorVotesQuorumFraction and this is using the v4.5 version which has a vulnerability. when a proposal is passed to lower the quorum requirement, past proposals may become executable if they were defeated only due to a lack of quorum, and the number of votes they received meets the new quorum requirement.
+ // @note the idea could be to use the version checking for the inherted contracts when doing the audit
+ // @audit fix: updated the version to 4.7
+ 
 contract AlchemixGovernor is L2Governor, L2GovernorVotes, L2GovernorVotesQuorumFraction, L2GovernorCountingSimple {
     address public admin;
     address public pendingAdmin;
