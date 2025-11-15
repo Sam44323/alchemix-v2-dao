@@ -546,6 +546,10 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
      * @notice Delegate votes from `msg.sender` to `delegatee`
      * @param delegatee The address to delegate votes to
      */
+    // @audit-issue able to gried-attack an user by delegating 1024 tokens (with minor-amt based veALCX tokens) to a delegatee and therefore blocking-over the delegation
+    // @note the attack-vector here is simple to analyze and that is user-abuse
+    // @audit fix: implement min-lock amt
+    // @audit-info CHECK_TAG: user-abuse/loss flow
     function delegate(address delegatee) public {
         require(delegatee != address(0), "cannot delegate to zero address");
         return _delegate(msg.sender, delegatee);
