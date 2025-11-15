@@ -1,6 +1,6 @@
 # Analysis-vector:
 
-From the above given flows, during any review analyze the codebase in this order
+During any review analyze the codebase in this order
 
 - start with the low-hanging issue detection flow to quickly identify and address any obvious vulnerabilities or misconfigurations that can be easily fixed.
 
