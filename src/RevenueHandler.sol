@@ -77,7 +77,7 @@ contract RevenueHandler is IRevenueHandler, Ownable {
         // @audit-issue wrong variable checking for the limit-version, it should be _treasuryPct instead of treasuryPct
         // @note this attack-vector is easy to check, just verify the validation of the input
         // @audit fix: replace the variable with the correct-one
-        // @audit-info CHECK_TAG: low-hanging issue detection flow
+        // @audit-info CHECK_TAG: low-hanging issue detection
         require(treasuryPct <= BPS, "treasury pct too large");
         treasuryPct = _treasuryPct;
     }

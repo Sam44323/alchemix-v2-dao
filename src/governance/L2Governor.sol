@@ -330,6 +330,10 @@ abstract contract L2Governor is Context, ERC165, EIP712, IGovernor, IERC721Recei
         proposal.voteStart.setDeadline(block.timestamp.toUint64() + votingDelay.toUint64());
         proposal.voteEnd.setDeadline(proposal.voteStart.getDeadline() + votingPeriod.toUint64());
 
+        // @audit-issue no expiration-given
+        // @note just a sanitization
+        // @audit fix: add an expiration-time
+        // @audit-info CHECK_TAG: low-hanging issue detection
         // creates the identifier of an operation containing a batch of transactions
         _timelockIds[proposalId] = keccak256(abi.encode(targets, values, calldatas, 0, descriptionHash, chainId));
 

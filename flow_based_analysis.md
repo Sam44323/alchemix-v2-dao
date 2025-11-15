@@ -5,7 +5,7 @@ During any review analyze the codebase in this order
 - start with the low-hanging issue detection flow to quickly identify and address any obvious vulnerabilities or misconfigurations that can be easily fixed.
 
 `@audit-info` tag to check:
-> low-hanging issue detection flow
+> low-hanging issue detection
 
 ---
 
