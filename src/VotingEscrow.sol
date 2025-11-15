@@ -396,7 +396,7 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
 
     /// @inheritdoc IVotingEscrow
     // @audit-issue The binary search in VotingEscrow's totalSupplyAtT() function terminates upon finding any exact timestamp match rather than consistently returning the most recent match, unlike _balanceOfTokenAt(). An attacker can exploit duplicate timestamps in pointHistory by making strategic checkpoints to manipulate which entry is returned, enabling them to arbitrarily change quorum calculations and alter governance proposal outcomes. This allows breaking quorum requirements or manipulating RevenueHandler distributions
-    // @note analyzing the binary-search implementations in the contract for consistency
+    // @note analyzing the core implementations in the contract for consistency
     // @audit fix: modify totalSupplyAtT() to always return the most recent pointHistory entry with a timestamp less than or equal to t, similar to _balanceOfTokenAt()
     // @audit-info CHECK_TAG: protocol-assault flow AND fund drain/advantage flow
     function totalSupplyAtT(uint256 t) public view returns (uint256) {
@@ -546,7 +546,7 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
      * @notice Delegate votes from `msg.sender` to `delegatee`
      * @param delegatee The address to delegate votes to
      */
-    // @audit-issue able to gried-attack an user by delegating 1024 tokens (with minor-amt based veALCX tokens) to a delegatee and therefore blocking-over the delegation
+    // @audit-issue able to grief-attack an user by delegating 1024 tokens (with minor-amt based veALCX tokens) to a delegatee and therefore blocking-over the delegation
     // @note the attack-vector here is simple to analyze and that is user-abuse
     // @audit fix: implement min-lock amt
     // @audit-info CHECK_TAG: user-abuse/loss flow
@@ -674,6 +674,10 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
             ? _locked0.end
             : _locked1.end;
 
+        // @audit-issue unclaimed tokens are not claimed before merging and thus making it loose rewards
+        // @note the idea of the attack-vector could be analyzed to check the fund-flow
+        // @audit fix: claim the rewards before merging the tokens
+        // @audit-info CHECK_TAG: user-abuse/loss flow
         locked[_from] = LockedBalance(0, 0, false, 0);
         _checkpoint(_from, _locked0, LockedBalance(0, 0, false, 0));
         _burn(_from, value0);
@@ -1598,7 +1602,7 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
         supply = supplyAfter;
 
         // @audit-issue _burn function requires broader permissions than those granted to single-token approvals. This causes reverts for approved operators who should have burn privileges and the action of merge and withdraw wont be executed cause only ownr or approved can do those actions which is not strictly required according to the protocol
-        @note the idea was to check how the custom approval was creating and issue and how it woulld've handled
+        // @note the idea of this attack could be checked in the initial-review
         // @audit fix: refactor the `approve` function for this
         // @audit-info CHECK_TAG: user-abuse/loss flow
         
