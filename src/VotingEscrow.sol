@@ -395,6 +395,10 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
     }
 
     /// @inheritdoc IVotingEscrow
+    // @audit-issue The binary search in VotingEscrow's totalSupplyAtT() function terminates upon finding any exact timestamp match rather than consistently returning the most recent match, unlike _balanceOfTokenAt(). An attacker can exploit duplicate timestamps in pointHistory by making strategic checkpoints to manipulate which entry is returned, enabling them to arbitrarily change quorum calculations and alter governance proposal outcomes. This allows breaking quorum requirements or manipulating RevenueHandler distributions
+    // @note analyzing the binary-search implementations in the contract for consistency
+    // @audit fix: modify totalSupplyAtT() to always return the most recent pointHistory entry with a timestamp less than or equal to t, similar to _balanceOfTokenAt()
+    // @audit-info CHECK_TAG: protocol-assault flow AND fund drain/advantage flow
     function totalSupplyAtT(uint256 t) public view returns (uint256) {
         uint256 _epoch = epoch;
         Point memory lastPoint = pointHistory[_epoch];

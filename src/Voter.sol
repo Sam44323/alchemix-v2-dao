@@ -179,6 +179,10 @@ contract Voter is IVoter {
         emit SetBoostMultiplier(_boostMultiplier);
     }
 
+    // @audit-issue voter can get unlimited FLUX accrued even after having onlyNewEpoch modifier cause the voting power of a token can be transfred to another tokenId and thus the attacker can keep resetting and accruing FLUX repeatedly
+    // @note the attack idea is quite about again how to gain advantage of the funds that can be received
+    // @audit fix: do a accrue of per-voter based tracking
+    // @audit-info CHECK_TAG: fund drain/advantage flow
     /// @inheritdoc IVoter
     function reset(uint256 _tokenId) public onlyNewEpoch(_tokenId) {
         if (msg.sender != admin) {
@@ -266,6 +270,10 @@ contract Voter is IVoter {
     }
 
     /// @inheritdoc IVoter
+    // @audit-issue createGauge can allow user to create unlimited gauges and distribute power to any number of gauges using `distribute`. But once the gauges get a limitation, the user can't `distribute` to those anyways thus making it a DoS scenario due to gas-limit. User can't also remove the gauge there is no such function but only `killGauge` which is not allowed by the user for calling
+    // @note the analysis idea could be because there is array in action, we check for gas-limit issues and how it can be abused overall
+    // @audit fix: implement a function that allows user to remove from gauge or add a limit somehow
+    // @audit-info CHECK_TAG: user-abuse flow
     function createGauge(address _pool, GaugeType _gaugeType) external returns (address) {
         require(msg.sender == admin, "not admin");
         require(gauges[_pool] == address(0x0), "exists");

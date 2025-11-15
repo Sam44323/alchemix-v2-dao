@@ -289,6 +289,10 @@ contract RevenueHandler is IRevenueHandler, Ownable {
             Here we are making the assumption that the price of the alAsset will always be at or below the price of the revenue token.
             This is currently a safe assumption since this imbalance has always held true for alUSD and alETH since their inceptions.
         */
+       // @audit-issue uses insufficient slippage protection when swapping-revenue tokens on Curve, accepting any output ≥ input amount. Attackers sandwches `checkpoints` with flash-loan funded swaps to manipulate pool prices, causing up to 9.26% protocol losses per epoch. The attacker profits by capturing the spread between manipulated and restored prices without requiring upfront capital.
+       // @note never trust the assumption and try to find the edge cases where the assumption might break and lead to loss of funds.
+       // @audit fix: implement slippage-protection
+       // @audit-info CHECK_TAG: fund drain/advantage flow
         return
             IPoolAdapter(poolAdapter).melt(
                 revenueToken,
