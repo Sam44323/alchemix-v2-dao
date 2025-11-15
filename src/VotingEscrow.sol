@@ -346,6 +346,10 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
         // amount of flux earned in one epoch
         uint256 oneEpochFlux = claimableFlux(_tokenId);
 
+        // @audit-issue division before multiplication, leading to precision-loss
+        // @note idea that could be used as this was a value-out then the potentials could be whether the amount is relatively-low
+        // @audit fix: uint256 ragequitAmount = (oneEpochFlux * fluxMultiplier * MAXTIME) / EPOCH;
+
         // total amount of epochs in fluxMultiplier amount of years
         uint256 totalEpochs = fluxMultiplier * ((MAXTIME) / EPOCH);
 
