@@ -309,7 +309,7 @@ abstract contract L2Governor is Context, ERC165, EIP712, IGovernor, IERC721Recei
         // @audit-issue the impediment of proposal can happen by manipulating the proposalThreshold value by an attacker. To oppose a proposal, the attacker can do `createLockFor` and thus increase the `getPastTotalSupply` for the votes threshold and thus impeding the proposal
         // @note the attack approach was quite simple as it check the main dependency how to block-over the user intended action and tried to tweak any of the variables
         // @audit fix: check the threshold from the same-timestamp thus preventing any arbitrary actions
-        // @audit-info CHECK_TAG: user-abuse flow
+        // @audit-info CHECK_TAG: user-abuse/loss flow
         require(
             getVotes(_msgSender(), block.timestamp - 1) >= proposalThreshold(),
             "Governor: veALCX power below proposal threshold"

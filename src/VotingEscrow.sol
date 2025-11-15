@@ -649,6 +649,10 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
         // If max lock is enabled retain the max lock
         _locked1.maxLockEnabled = _locked0.maxLockEnabled ? _locked0.maxLockEnabled : _locked1.maxLockEnabled;
 
+        // @audit-issue during the merging of the token, this function is transf the accrued-rewards from FLUX but not for the ALCX token thus for permanently-loosing the accrued rewards for that token for the user
+        // @note the attack-idea could only be gotten if the reviewer checked if any mismanagement would lead to loss-of-funds for the user
+        // @audit fix: add the code for the transf of rewards for the ALCX token as well for the user
+        // @audit-info CHECK_TAG: user-abuse/loss flow
         IFluxToken(FLUX).mergeFlux(_from, _to);
 
         // If max lock is enabled end is the max lock time, otherwise it is the greater of the two end times
@@ -1584,7 +1588,7 @@ contract VotingEscrow is IERC721, IERC721Metadata, IVotes, IVotingEscrow {
         // @audit-issue _burn function requires broader permissions than those granted to single-token approvals. This causes reverts for approved operators who should have burn privileges and the action of merge and withdraw wont be executed cause only ownr or approved can do those actions which is not strictly required according to the protocol
         @note the idea was to check how the custom approval was creating and issue and how it woulld've handled
         // @audit fix: refactor the `approve` function for this
-        // @audit-info CHECK_TAG: user-abuse flow
+        // @audit-info CHECK_TAG: user-abuse/loss flow
         
         // Clear approval
         approve(address(0), _tokenId);

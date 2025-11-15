@@ -16,10 +16,10 @@ During any review analyze the codebase in this order
 
 ---
 
-- conduct the user-abuse flow, here you main objective to be a "pain-in-the-ass" for the user so that you can tarnish the repuation of the protocol and if you can find any vector that can lead to fund-draining while doing user-abuse then that is even better
+- conduct the user-abuse/loss flow, here you main objective to be a "pain-in-the-ass" for the user so that you can tarnish the repuation of the protocol and if you can find any vector that can lead to fund-draining while doing user-abuse then that is even better
 
 `@audit-info` tag to check:
-> user-abuse flow
+> user-abuse/loss flow
 
 ---
 
