@@ -9,14 +9,14 @@ During any review analyze the codebase in this order
 
 ---
 
-- focus on the fund drain/advantage flow to identify any vulnerabilities that could lead to financial losses or unfair advantages within the system for the attacker. Here think like a blackhat and check how to manipulate the system
+- focus on the fund drain/advantage flow to identify any vulnerabilities that could lead to financial losses or unfair advantages within the system for the attacker. Here, think like a blackhat and check how to manipulate the system
 
 `@audit-info` tag to check:
 > fund drain/advantage flow
 
 ---
 
-- conduct the user-abuse/loss flow, here you main objective to be a "pain-in-the-ass" for the user so that you can tarnish the repuation of the protocol and if you can find any vector that can lead to fund-draining while doing user-abuse then that is even better
+- conduct the user-abuse/loss flow, here your main objective is to be a "pain-in-the-ass" for the user so that you can tarnish the reputation of the protocol, and if you can find any vector that can lead to fund-draining while doing user-abuse then that is even better
 
 `@audit-info` tag to check:
 > user-abuse/loss flow
